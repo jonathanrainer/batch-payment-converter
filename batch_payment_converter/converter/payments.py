@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 from .exceptions import IncorrectSortCodeAccountNumberException
 
 

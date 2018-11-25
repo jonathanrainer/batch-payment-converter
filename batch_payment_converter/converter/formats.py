@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-class InputFormat(ABC):
+
+class Format(ABC):
 
     @abstractmethod
     def name(self):
@@ -9,6 +10,10 @@ class InputFormat(ABC):
     @abstractmethod
     def mapping(self):
         return
+
+
+class InputFormat(Format):
+    pass
 
 
 class XeroFormat(InputFormat):
@@ -22,3 +27,4 @@ class XeroFormat(InputFormat):
         "Description": (3, lambda x:x),
         "Narrative": (4, lambda x:x)
     }
+

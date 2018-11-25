@@ -1,7 +1,7 @@
 import unittest
 
 from batch_payment_converter.converter.payments import Payment
-from batch_payment_converter.converter.input_formats import XeroFormat
+from batch_payment_converter.converter.formats import XeroFormat
 from batch_payment_converter.converter.exceptions import \
     IncorrectSortCodeAccountNumberException
 
