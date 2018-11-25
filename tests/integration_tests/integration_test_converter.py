@@ -24,7 +24,5 @@ class ConvertFileNoFrontend(unittest.TestCase):
     def test_processing_payments(self):
         payments = self.converter.import_csv(Path("data", "input.csv"), XeroFormat)
 
-
-
 if __name__ == '__main__':
     unittest.main()
