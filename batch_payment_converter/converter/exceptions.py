@@ -1,0 +1,2 @@
+class IncorrectSortCodeAccountNumberException(Exception):
+    pass
