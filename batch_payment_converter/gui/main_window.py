@@ -6,6 +6,7 @@ from pathlib import Path
 from batch_payment_converter.converter.formats import *
 from batch_payment_converter.converter.processed_payments import *
 from batch_payment_converter.converter.converter import Converter
+from batch_payment_converter.gui.gui_utils import GUIUtils
 
 
 class MainWindow(wx.Frame):
@@ -13,7 +14,7 @@ class MainWindow(wx.Frame):
     def __init__(self, parent, title):
         # Create the initial frame
         wx.Frame.__init__(self, parent, title=title,
-                          size=self.calculate_window_size())
+                          size=GUIUtils.calculate_window_size())
 
         self.margin_to_frame_edge = 25
         # Create sizers for each layout element
@@ -50,7 +51,6 @@ class MainWindow(wx.Frame):
             wx.EXPAND | wx.ALL | wx.EAST, self.margin_to_frame_edge)
         self.browse_input_button.Bind(wx.EVT_BUTTON, self.browse_input_file)
 
-
         # Create a sizer for the box to specify outputs
         self.output_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.output_label = wx.StaticText(
@@ -81,7 +81,7 @@ class MainWindow(wx.Frame):
                 x.name for x in InputFormat.__subclasses__()
             ])
         self.input_radio_label = wx.StaticText(
-            self, 0, style = wx.ALIGN_CENTRE
+            self, 0, style=wx.ALIGN_CENTRE
         )
         self.output_radio_label = wx.StaticText(
             self, 0, style=wx.ALIGN_CENTRE
@@ -94,11 +94,13 @@ class MainWindow(wx.Frame):
             ]
         )
         self.control_ver_sizer_l.Add(self.input_radio_label, 1, wx.CENTER)
-        self.control_ver_sizer_l.Add(self.input_radio, 4,
-                               wx.EXPAND|wx.ALL, self.margin_to_frame_edge)
+        self.control_ver_sizer_l.Add(
+            self.input_radio, 4,
+            wx.EXPAND | wx.ALL, self.margin_to_frame_edge)
         self.control_ver_sizer_r.Add(self.output_radio_label, 1, wx.CENTER)
-        self.control_ver_sizer_r.Add(self.output_radio, 4,
-                               wx.EXPAND | wx.ALL, self.margin_to_frame_edge)
+        self.control_ver_sizer_r.Add(
+            self.output_radio, 4,
+            wx.EXPAND | wx.ALL, self.margin_to_frame_edge)
         self.control_sizer.Add(self.control_ver_sizer_l, wx.EXPAND)
         self.control_sizer.Add(self.control_ver_sizer_r, wx.EXPAND)
 
@@ -106,7 +108,7 @@ class MainWindow(wx.Frame):
         self.convert_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.convert_button = wx.Button(self, label="Convert")
         self.convert_button.Bind(wx.EVT_BUTTON, self.convert)
-        self.convert_sizer.Add(self.convert_button, 1, wx.EXPAND|wx.ALL,
+        self.convert_sizer.Add(self.convert_button, 1, wx.EXPAND | wx.ALL,
                                self.margin_to_frame_edge)
 
         # Create a sizer to separate
@@ -123,14 +125,11 @@ class MainWindow(wx.Frame):
         self.base_sizer.Fit(self)
         self.Show()
 
-    def calculate_window_size(self):
-        display_tuple = wx.GetDisplaySize()
-        return display_tuple[0]/2 + 20, -1
-
     def browse_input_file(self, _):
-        with wx.FileDialog(self, "Choose Input File",
-                           wildcard="CSV files (*.csv)|*.csv",
-                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+        with wx.FileDialog(
+                self, "Choose Input File",
+                wildcard="CSV files (*.csv)|*.csv",
+                style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
             if fileDialog.ShowModal() == wx.ID_CANCEL:
                 return  # the user changed their mind
@@ -166,7 +165,7 @@ class MainWindow(wx.Frame):
             return
         # Start the conversion process
         converter = Converter()
-        converter.convert_file(
+        processed_payments = converter.convert_file(
             input_file,
             [x for x in InputFormat.__subclasses__() if
              x.name == self.input_radio.GetItemLabel(

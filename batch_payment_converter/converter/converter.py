@@ -13,9 +13,7 @@ class Converter(object):
         # Pass that object through the converter specified by the Output Format
         processed_payments = self.payments_to_output_format(payments,
                                                             output_class)
-        # Write the output file to the specified location
-        self.write_output_file(output_file_name, processed_payments)
-        return
+        return processed_payments
 
     @staticmethod
     def import_csv(csv_path, input_format):
