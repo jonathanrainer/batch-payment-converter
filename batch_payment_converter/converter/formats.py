@@ -15,6 +15,9 @@ class Format(ABC):
 class InputFormat(Format):
     pass
 
+    def __str__(self):
+        return self.name
+
 
 class XeroFormat(InputFormat):
 

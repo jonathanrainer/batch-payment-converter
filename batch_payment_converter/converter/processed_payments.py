@@ -234,5 +234,5 @@ class BarclaysPayment(ProcessedPayment):
         return [
             self.sort_code.value, self.payee_name.value,
             self.account_number.value, self.amount.value,
-            self.account_number.value, self.payment_type_identifier, "/"
+            self.account_number.value, self.payment_type_identifier.value, "/"
         ]
