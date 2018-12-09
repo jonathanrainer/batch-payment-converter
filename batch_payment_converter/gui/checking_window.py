@@ -57,7 +57,8 @@ class CheckingWindow(wx.Frame):
                 else:
                     self.grid.SetCellValue(
                         row_id, col_id, payment.__dict__[attribute].value)
-                if re.match(r"X{6,14}", payment.__dict__[attribute].value):
+                if isinstance(payment.__dict__[attribute].value, str) and \
+                        re.match(r"X{6,14}", payment.__dict__[attribute].value):
                     for col_col_id, _ in enumerate(self.get_object_attrs_not_abstract(
                     processed_payments)):
                         self.grid.SetCellBackgroundColour(
