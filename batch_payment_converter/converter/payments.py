@@ -17,15 +17,10 @@ class Payment(object):
         self.payee_name = raw_data[input_format.mapping["Payee"][0]]
         self.description = raw_data[input_format.mapping["Description"][0]]
         self.narrative = raw_data[input_format.mapping["Narrative"][0]]
-        sort_code = input_format.mapping["Sort Code"][1](
+        self.sort_code = input_format.mapping["Sort Code"][1](
             raw_data[input_format.mapping["Sort Code"][0]])
-        if sort_code == "XXXXXX":
-            raise IncorrectSortCodeAccountNumberException()
-        else:
-            self.sort_code = sort_code
-        account_number = input_format.mapping["Account Number"][1](
+        self.account_number = input_format.mapping["Account Number"][1](
             raw_data[input_format.mapping["Account Number"][0]])
-        self.account_number = account_number
 
     def __str__(self):
         return "{0} | {1} | {2} | £{3} | {4}".format(

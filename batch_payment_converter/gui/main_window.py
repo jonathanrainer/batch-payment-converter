@@ -1,5 +1,5 @@
 import wx
-import datetime
+from datetime import datetime
 
 from pathlib import Path
 
@@ -7,6 +7,7 @@ from batch_payment_converter.converter.formats import *
 from batch_payment_converter.converter.processed_payments import *
 from batch_payment_converter.converter.converter import Converter
 from batch_payment_converter.gui.gui_utils import GUIUtils
+from batch_payment_converter.gui.checking_window import CheckingWindow
 
 
 class MainWindow(wx.Frame):
@@ -171,13 +172,15 @@ class MainWindow(wx.Frame):
              x.name == self.input_radio.GetItemLabel(
                  self.input_radio.GetSelection())
              ][0],
-            Path(output_folder, "output-{0}.csv".format(
-                datetime.datetime.now().strftime("%d%m%Y_%H%M%S"))
-                 ),
             [x for x in ProcessedPayment.__subclasses__() if
              x.name == self.output_radio.GetItemLabel(
                  self.output_radio.GetSelection())
              ][0]
         )
+        output_file_location = Path(output_folder, "output-{0}.csv".format(
+           datetime.now().strftime(
+                "%d%m%Y-%H%M%S")))
         # Once completed open up the new grid to add in the dates and sort out
         # problematic sort codes etc.
+        CheckingWindow(self, "Checking Window", processed_payments,
+                       output_file_location)

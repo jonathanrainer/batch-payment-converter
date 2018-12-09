@@ -5,8 +5,7 @@ from .payments import Payment
 
 class Converter(object):
 
-    def convert_file(self, input_file_name, input_format, output_file_name,
-                     output_class):
+    def convert_file(self, input_file_name, input_format, output_class):
         # Take in the CSV file with the appropriate format object and convert
         # it into an object
         payments = self.import_csv(input_file_name, input_format)
