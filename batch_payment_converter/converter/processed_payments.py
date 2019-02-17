@@ -180,8 +180,6 @@ class NatwestBankLinePayment(ProcessedPayment):
             "By Order of Address Line 2", "", False)
         self.T082 = ProcessedPaymentField(
             "By Order of Address Line 3", "", False)
-        self.T083 = ProcessedPaymentField(
-            "By Order of Address Line 4", "", False)
 
     def __str__(self):
         return "{0} | {1} | {2} | {3}".format(self.T014, self.T022, self.T028,
@@ -189,7 +187,7 @@ class NatwestBankLinePayment(ProcessedPayment):
 
     def output_payment(self):
         return [
-            self.H001.value, self.H002.value, self.H003.value, self.T001.value,
+            "", self.H001.value, self.H002.value, self.H003.value, self.T001.value,
             self.T002.value, self.T003.value, self.T004.value, self.T005.value,
             self.T006.value, self.T007.value, self.T008.value, self.T009.value,
             self.T010.value, self.T011.value, self.T012.value, self.T013.value,
@@ -197,7 +195,7 @@ class NatwestBankLinePayment(ProcessedPayment):
             self.T017.value,
             self.T018.value, self.T019.value, self.T020.value, self.T021.value,
             self.T022.value, self.T023.value, self.T024.value, self.T025.value,
-            self.T025.value, self.T026.value, self.T027.value, self.T028.value,
+            self.T026.value, self.T027.value, self.T028.value,
             self.T029.value, self.T030.value, self.T031.value, self.T032.value,
             self.T033.value, self.T034.value, self.T035.value, self.T036.value,
             self.T037.value, self.T038.value, self.T039.value, self.T040.value,
@@ -210,8 +208,7 @@ class NatwestBankLinePayment(ProcessedPayment):
             self.T065.value, self.T066.value, self.T067.value, self.T068.value,
             self.T069.value, self.T070.value, self.T071.value, self.T072.value,
             self.T073.value, self.T074.value, self.T075.value, self.T076.value,
-            self.T077.value, self.T078.value, self.T079.value, self.T080.value,
-            self.T081.value, self.T082.value, self.T083.value
+            self.T077.value
             ]
 
 

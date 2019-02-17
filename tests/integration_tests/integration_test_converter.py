@@ -45,14 +45,14 @@ class ConvertNatwestFileNoFrontend(unittest.TestCase):
         with open(output_path) as csv_file:
             test_file_reader = csv.reader(csv_file)
             for row in test_file_reader:
-                self.assertRegex(row[18], "[0-9]{8}")
+                self.assertRegex(row[19], "[0-9]{8}")
 
     def test_natwest_standard_date(self):
         output_path = self.utils.create_file(NatwestBankLinePayment, "test_output_natwest_dates")
         with open(output_path) as csv_file:
             test_file_reader = csv.reader(csv_file)
             for row in test_file_reader:
-                parsed_date = datetime.date(datetime.strptime(row[18], "%d%m%Y"))
+                parsed_date = datetime.date(datetime.strptime(row[19], "%d%m%Y"))
                 self.assertEqual(parsed_date, datetime.date(datetime.today()) + timedelta(days=2))
 
     def test_natwest_long_number(self):
@@ -60,7 +60,15 @@ class ConvertNatwestFileNoFrontend(unittest.TestCase):
         with open(output_path) as csv_file:
             test_file_reader = csv.reader(csv_file)
             for row in test_file_reader:
-                self.assertEqual(row[12], "56001412147931")
+                self.assertEqual(row[13], "56001412147931")
+
+    def test_natwest_output_format(self):
+        output_path = self.utils.create_file(NatwestBankLinePayment, "test_output_natwest_long_number")
+        with open(output_path) as csv_file:
+            for line in csv_file:
+                self.assertRegex(
+                    line,
+                    r'^,{4}[0-9]+,{9}[0-9]+,{4}[0-9]+\.[0-9]+,,[0-9]+,{6}[0-9]+,{6}[0-9]+,,[^,]+,{47}\n$')
 
 
 class ConvertBarclaysNoFrontend(unittest.TestCase):
