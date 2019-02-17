@@ -3,6 +3,7 @@ import os
 import csv
 import glob
 
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from batch_payment_converter.converter.converter import Converter
@@ -56,6 +57,14 @@ class ConvertFileNoFrontend(unittest.TestCase):
             if subcls != ProcessedPayment:
                 output_path = self.create_file(subcls, "test_output_line_ending_file")
                 self.assertEqual(output_path.suffix, ".txt")
+
+    def test_natwest_standard_date(self):
+        output_path = self.create_file(NatwestBankLinePayment, "test_output_natwest_dates")
+        with open(output_path) as csv_file:
+            test_file_reader = csv.reader(csv_file)
+            for row in test_file_reader:
+                parsed_date = datetime.date(datetime.strptime(row[18], "%d%m%Y"))
+                self.assertEqual(parsed_date, datetime.date(datetime.today()) + timedelta(days=2))
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timedelta
 
 from abc import ABC, abstractmethod
 
@@ -51,7 +51,7 @@ class NatwestBankLinePayment(ProcessedPayment):
                                           str(raw_payment.amount), False)
         self.T015 = ProcessedPaymentField("Execution Date", "", False)
         self.T016 = ProcessedPaymentField(
-            "Date Payment to Arrive (Credit Date)", datetime.now(), True)
+            "Date Payment to Arrive (Credit Date)", datetime.now() + timedelta(days=2), True)
         self.T017 = ProcessedPaymentField("Ordering Institution Identifier", "",
                                           False)
         self.T018 = ProcessedPaymentField(
