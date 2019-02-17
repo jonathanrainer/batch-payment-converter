@@ -42,7 +42,7 @@ class NatwestBankLinePayment(ProcessedPayment):
         self.T008 = ProcessedPaymentField("Priority", "", False)
         self.T009 = ProcessedPaymentField("Routing Method", "", False)
         self.T010 = ProcessedPaymentField("Debit Account Identifier",
-                                          "5600141214791", False)
+                                          "56001412147931", False)
         self.T011 = ProcessedPaymentField("Debit Charger Account Identifier",
                                           "", False)
         self.T012 = ProcessedPaymentField("Charges Code Type", "", False)

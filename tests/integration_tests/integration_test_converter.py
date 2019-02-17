@@ -66,6 +66,13 @@ class ConvertFileNoFrontend(unittest.TestCase):
                 parsed_date = datetime.date(datetime.strptime(row[18], "%d%m%Y"))
                 self.assertEqual(parsed_date, datetime.date(datetime.today()) + timedelta(days=2))
 
+    def test_natwest_long_number(self):
+        output_path = self.create_file(NatwestBankLinePayment, "test_output_natwest_long_number")
+        with open(output_path) as csv_file:
+            test_file_reader = csv.reader(csv_file)
+            for row in test_file_reader:
+                self.assertEqual(row[12], "56001412147931")
+
 
 if __name__ == '__main__':
     unittest.main()
