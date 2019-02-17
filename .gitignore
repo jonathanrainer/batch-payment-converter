@@ -194,3 +194,6 @@ fabric.properties
 .idea/httpRequests
 
 .idea/
+tests/integration_tests/temp
+output/
+data/

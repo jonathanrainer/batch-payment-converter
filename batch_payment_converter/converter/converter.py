@@ -36,7 +36,10 @@ class Converter(object):
 
     @staticmethod
     def write_output_file(output_file, processed_payments):
-        with open(str(output_file), 'w') as output:
-            csv_writer = csv.writer(output)
+        if output_file.suffix != ".txt":
+            output_file = output_file.with_suffix(".txt")
+        with open(str(output_file), 'w', newline="") as output:
+            csv_writer = csv.writer(output, lineterminator="\r\n")
             for proc_payment in processed_payments:
                 csv_writer.writerow(proc_payment.output_payment())
+        return output_file
