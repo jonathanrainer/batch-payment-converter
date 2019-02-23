@@ -3,7 +3,7 @@ import os
 import csv
 import glob
 
-from datetime import datetime, timedelta
+
 from pathlib import Path
 
 from batch_payment_converter.converter.converter import Converter

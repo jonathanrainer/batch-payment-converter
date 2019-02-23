@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 
 from wx.grid import Grid
+from wx import MessageDialog
 
 from batch_payment_converter.gui.gui_utils import GUIUtils
 from batch_payment_converter.converter.converter import Converter
@@ -99,18 +100,45 @@ class CheckingWindow(wx.Frame):
          x in processed_payments[0].__dict__ and
          hasattr(processed_payments[0].__dict__[x], "value") and
          processed_payments[0].__dict__[x].value != ""],
-                      key=lambda x: processed_payments[0].__dict__[x].name)
+                      key=lambda x: processed_payments[0].__dict__[x].ordinal)
 
     def confirm(self, _):
+        # Go over all the rows and run the validator methods. If one of them fails throw up an error message flagging
+        # where the error is
         for row_id, processed_payment in enumerate(self.processed_payments):
             for user_editable_attr in [y for y in
                       self.get_object_attrs_not_abstract(self.processed_payments) if
                       self.processed_payments[0].__dict__[y].user_editable]:
                 column_id, _ = \
                     self.attr_column_mapping[user_editable_attr]
-                processed_payment.__dict__[user_editable_attr].value = \
-                    self.grid.GetCellValue(row_id, column_id)
-
+                if(not processed_payment.__dict__[user_editable_attr].validator(
+                        self.grid.GetCellValue(row_id, column_id))):
+                    error_dialog = \
+                        MessageDialog(self,
+                                      "Data Entered in Column '{}' on Row '{}' - '{}' "
+                                      "does not match what was expected. \n"
+                                      "Please alter the data and click confirm again.\n\n"
+                                      "No data has been altered and no files have been created.".format(
+                                          self.attr_column_mapping[user_editable_attr][1],
+                                          row_id, self.grid.GetCellValue(row_id, column_id)
+                                      ),
+                                      "Data Error - Please Recheck the Table",
+                                      wx.OK|wx.ICON_ERROR|wx.CENTRE)
+                    error_dialog.ShowModal()
+                    return
+        # After the validity of the data is assured, set the values to the new values and begin the conversion process
+        for row_id, processed_payment in enumerate(self.processed_payments):
+            for user_editable_attr in [y for y in
+                      self.get_object_attrs_not_abstract(self.processed_payments) if
+                      self.processed_payments[0].__dict__[y].user_editable]:
+                column_id, _ = \
+                    self.attr_column_mapping[user_editable_attr]
+                if isinstance(processed_payment.__dict__[user_editable_attr].value, datetime):
+                    processed_payment.__dict__[user_editable_attr].value = datetime.strptime(
+                        self.grid.GetCellValue(row_id, column_id), "%d/%m/%Y")
+                else:
+                    processed_payment.__dict__[user_editable_attr].value = \
+                        self.grid.GetCellValue(row_id, column_id)
         converter = Converter()
         converter.write_output_file(self.output_file_loc,
                                     self.processed_payments)

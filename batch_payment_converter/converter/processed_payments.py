@@ -1,5 +1,6 @@
-from datetime import datetime,timedelta
+import re
 
+from datetime import datetime, timedelta
 from abc import ABC, abstractmethod
 
 
@@ -16,10 +17,12 @@ class ProcessedPayment(ABC):
 
 class ProcessedPaymentField(object):
 
-    def __init__(self, name, value, user_editable):
+    def __init__(self, name, value, user_editable, ordinal=0, validator=lambda x: True):
         self.name = name
         self.value = value
         self.user_editable = user_editable
+        self.ordinal = ordinal
+        self.validator = validator
 
 
 class NatwestBankLinePayment(ProcessedPayment):
@@ -51,7 +54,9 @@ class NatwestBankLinePayment(ProcessedPayment):
                                           str(raw_payment.amount), False)
         self.T015 = ProcessedPaymentField("Execution Date", "", False)
         self.T016 = ProcessedPaymentField(
-            "Date Payment to Arrive (Credit Date)", datetime.now() + timedelta(days=2), True)
+            "Date Payment to Arrive (Credit Date)", datetime.now() + timedelta(days=2), True,
+            validator=lambda a: self.date_parse_test(a)
+        )
         self.T017 = ProcessedPaymentField("Ordering Institution Identifier", "",
                                           False)
         self.T018 = ProcessedPaymentField(
@@ -63,7 +68,8 @@ class NatwestBankLinePayment(ProcessedPayment):
         self.T021 = ProcessedPaymentField(
             "Ordering Institution Name and Address Line Number 4", "", False)
         self.T022 = ProcessedPaymentField(
-            "Account with Bank Identifier", raw_payment.sort_code, False)
+            "Account with Bank Identifier", raw_payment.sort_code, False,
+            validator=lambda a: re.match("[0-9]{6}", a) is not None)
         self.T023 = ProcessedPaymentField(
             "Account with Bank Account Number", "", False)
         self.T024 = ProcessedPaymentField(
@@ -75,7 +81,8 @@ class NatwestBankLinePayment(ProcessedPayment):
         self.T027 = ProcessedPaymentField(
             "Account with Bank Name and Address Line Number 4", "", False)
         self.T028 = ProcessedPaymentField(
-            "Beneficiary Account Number", raw_payment.account_number, False)
+            "Beneficiary Account Number", raw_payment.account_number, False,
+            validator=lambda a: re.match("[0-9]{8}", a) is not None)
         self.T029 = ProcessedPaymentField(
             "Beneficiary Institution Identifier", "", False)
         self.T030 = ProcessedPaymentField(
@@ -180,6 +187,16 @@ class NatwestBankLinePayment(ProcessedPayment):
             "By Order of Address Line 2", "", False)
         self.T082 = ProcessedPaymentField(
             "By Order of Address Line 3", "", False)
+        for ordinal, x in enumerate(sorted(dir(self), key=lambda x:x)):
+            if not x.startswith('_') and re.match("[A-Z][0-9]+", x):
+                self.__dict__[x].ordinal = ordinal
+
+    def date_parse_test(self, candidate_string):
+        try:
+            datetime.strptime(candidate_string, "%d/%m/%Y")
+            return True
+        except ValueError:
+            return False
 
     def __str__(self):
         return "{0} | {1} | {2} | {3}".format(self.T014, self.T022, self.T028,
@@ -218,16 +235,16 @@ class BarclaysPayment(ProcessedPayment):
 
     def __init__(self, raw_payment):
         self.sort_code = ProcessedPaymentField(
-            "Sort Code", raw_payment.sort_code, False)
+            "Sort Code", raw_payment.sort_code, False, 0)
         self.payee_name = ProcessedPaymentField(
-            "Payee Name", raw_payment.payee_name, False)
+            "Payee Name", raw_payment.payee_name, False, 1)
         self.account_number = ProcessedPaymentField(
-            "Account Number", raw_payment.account_number, False)
-        self.amount = ProcessedPaymentField("Amount", raw_payment.amount, False)
+            "Account Number", raw_payment.account_number, False, 2)
+        self.amount = ProcessedPaymentField("Amount", raw_payment.amount, False, 3)
         self.account_name = ProcessedPaymentField("Account Name",
-                                                  "<<TO BE INSERTED>>", True)
+                                                  "<<TO BE INSERTED>>", True, 4)
         self.payment_type_identifier = ProcessedPaymentField(
-            "Payment Type Identifier", "99", False)
+            "Payment Type Identifier", "99", False, 5)
 
     def __str__(self):
         return "{0} | {1} | {2} | {3}".format(
