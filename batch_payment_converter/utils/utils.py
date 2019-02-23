@@ -1,6 +1,7 @@
 import subprocess
 import shutil
 import os
+import sys
 
 from pathlib import Path
 
@@ -8,18 +9,28 @@ from pathlib import Path
 class Utils(object):
 
     pyinstaller_path = \
-        Path("..", "..", "venv", "Scripts", "pyinstaller.exe")
+        Path("venv", "Scripts", "pyinstaller.exe")
 
-    def build_application(self, output_location, working_dir_path, spec_path, name, script_path):
+    def build_application(self, output_location, working_dir_path, spec_path, name):
         # Run PyInstaller to create the exe
-        if not os.path.isdir("temp"):
-            os.mkdir("temp")
-        subprocess.run(
-            "\"{0}\" --distpath=\"{1}\" --workpath=\"{2}\" --clean -F --specpath=\"{3}\" -w -n={4} {5}".format(
-                self.pyinstaller_path.absolute(), output_location, working_dir_path, spec_path, name, script_path
-            ), shell=True)
+        self.create_folder(Path("build"))
+        working_dir_path = Path("build", working_dir_path)
+        self.create_folder(working_dir_path)
+        spec_path = Path("build", spec_path)
+        self.create_folder(spec_path)
+        subprocess.run("\"{}\" --distpath=\"{}\" --workpath=\"{}\" --clean \"{}\"".format(
+            self.pyinstaller_path, Path("dist"), working_dir_path, str(Path("build", "spec", "batch_payment_converter.spec"
+        ).absolute())), shell=True)
         # Clear out temporary files
-        shutil.rmtree(working_dir_path)
-        shutil.rmtree(spec_path)
+        shutil.rmtree(working_dir_path.absolute())
         # Return the path of the .exe file to the caller
         return Path(output_location, "{}.exe".format(name))
+
+    def create_folder(self, path):
+        if not os.path.isdir(str(path.absolute())):
+            os.mkdir(str(path.absolute()))
+
+
+if __name__ == "__main__":
+    utils = Utils()
+    utils.build_application(*sys.argv[1:])

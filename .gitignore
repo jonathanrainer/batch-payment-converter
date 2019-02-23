@@ -197,3 +197,4 @@ fabric.properties
 tests/integration_tests/temp
 output/
 data/
+build/dlls/
