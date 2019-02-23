@@ -204,7 +204,7 @@ class NatwestBankLinePayment(ProcessedPayment):
 
     def output_payment(self):
         return [
-            "", self.H001.value, self.H002.value, self.H003.value, self.T001.value,
+            self.H001.value, self.H002.value, self.H003.value, self.T001.value,
             self.T002.value, self.T003.value, self.T004.value, self.T005.value,
             self.T006.value, self.T007.value, self.T008.value, self.T009.value,
             self.T010.value, self.T011.value, self.T012.value, self.T013.value,

@@ -1,5 +1,7 @@
 import unittest
 
+from datetime import datetime, timedelta
+
 from batch_payment_converter.converter.processed_payments import \
     NatwestBankLinePayment
 from batch_payment_converter.converter.payments import Payment
@@ -18,13 +20,13 @@ class TestNatwestBankLineInitialisation(unittest.TestCase):
         processed_payment = NatwestBankLinePayment(
             self.raw_payment
         )
-        self.assertEqual(processed_payment.data["T001"], "01")
-        self.assertEqual(processed_payment.data["T010"], "5600141214791")
-        self.assertEqual(processed_payment.data["T014"], "399.78")
-        self.assertEqual(processed_payment.data["T016"], "")
-        self.assertEqual(processed_payment.data["T022"], "380012")
-        self.assertEqual(processed_payment.data["T028"], "23452192")
-        self.assertEqual(processed_payment.data["T030"], "Jane Smitherington")
+        self.assertEqual(processed_payment.T001.value, "01")
+        self.assertEqual(processed_payment.T010.value, "56001412147931")
+        self.assertEqual(processed_payment.T014.value, "399.78")
+        self.assertEqual(processed_payment.T016.value, datetime.now() + timedelta(days=2))
+        self.assertEqual(processed_payment.T022.value, "380012")
+        self.assertEqual(processed_payment.T028.value, "23452192")
+        self.assertEqual(processed_payment.T030.value, "Jane Smitherington")
 
 
 class TestNatwestBankLinetOutput(unittest.TestCase):
@@ -37,16 +39,17 @@ class TestNatwestBankLinetOutput(unittest.TestCase):
         self.processed_payment = NatwestBankLinePayment(self.raw_payment)
 
     def test_processed_payment_output(self):
+        date_string = (datetime.now() + timedelta(days=2)).strftime("%d%m%Y")
         self.assertListEqual(
             list(self.processed_payment.output_payment()),
             [
                 "", "", "", "01", "", "", "", "", "", "", "", "",
-                "5600141214791", "", "", "", "399.78", "", "", "", "", "",
+                "56001412147931", "", "", "", "399.78", "", date_string, "", "", "",
                 "", "", "380012", "", "", "", "", "", "23452192", "",
                 "Jane Smitherington", "", "", "", "", "", "", "", "", "", "",
                 "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
                 "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-                "", "", "", "", "", "", "", "", "", "", ""
+                "", "", "", "", "", ""
 
             ])
 

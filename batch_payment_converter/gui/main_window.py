@@ -1,5 +1,4 @@
 import wx
-from datetime import datetime
 
 from pathlib import Path
 
@@ -26,8 +25,7 @@ class MainWindow(wx.Frame):
             style=wx.ALIGN_CENTER
         )
         self.title.SetLabelMarkup(
-            "<span size=\"xx-large\" weight=\"bold\">"
-            "Batch Payment File Converter</span>")
+            "<big><b> Batch Payment File Converter </b></big>")
         self.title_sizer.Add(self.title, 1, wx.ALL | wx.EXPAND,
                              self.margin_to_frame_edge)
         self.title_sizer.SetMinSize(200, 100)
