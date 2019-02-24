@@ -241,8 +241,7 @@ class BarclaysPayment(ProcessedPayment):
         self.account_number = ProcessedPaymentField(
             "Account Number", raw_payment.account_number, False, 2)
         self.amount = ProcessedPaymentField("Amount", raw_payment.amount, False, 3)
-        self.account_name = ProcessedPaymentField("Account Name",
-                                                  "<<TO BE INSERTED>>", True, 4)
+        self.account_name = ProcessedPaymentField("Payment Description", raw_payment.description, True, 4)
         self.payment_type_identifier = ProcessedPaymentField(
             "Payment Type Identifier", "99", False, 5)
 
