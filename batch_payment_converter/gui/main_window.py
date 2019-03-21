@@ -133,7 +133,8 @@ class MainWindow(wx.Frame):
             if fileDialog.ShowModal() == wx.ID_CANCEL:
                 return  # the user changed their mind
 
-            # Set the contents of the
+            # Set the contents of the box
+            self.input_text_box.SetValue("")
             self.input_text_box.write(str(Path(fileDialog.GetPath())))
 
     def browse_output_file(self, _):
@@ -145,6 +146,7 @@ class MainWindow(wx.Frame):
                 return  # the user changed their mind
 
             # Set the contents of the
+            self.output_text_box.SetValue("")
             self.output_text_box.write(str(Path(dirDialog.GetPath())))
 
     def convert(self, _):
