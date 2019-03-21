@@ -127,7 +127,7 @@ class MainWindow(wx.Frame):
     def browse_input_file(self, _):
         with wx.FileDialog(
                 self, "Choose Input File",
-                wildcard="CSV files (*.csv)|*.csv",
+                wildcard="CSV or TXT files (*.csv;*.txt)|*.csv;*.txt",
                 style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
             if fileDialog.ShowModal() == wx.ID_CANCEL:
