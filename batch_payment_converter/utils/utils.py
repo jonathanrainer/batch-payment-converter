@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from zipfile import ZipFile
 
+
 class Utils(object):
 
     pyinstaller_path = \
@@ -26,11 +27,6 @@ class Utils(object):
         ).absolute())), shell=True)
         # Clear out temporary files
         shutil.rmtree(working_dir_path.absolute())
-        # Return the path of the .exe file to the caller
-        with ZipFile(Path(output_location, "{}.zip".format(name)), 'w') as zip:
-            for file in os.listdir(Path(output_location, name)):
-                zip.write(Path(output_location, name, file))
-        shutil.rmtree(Path(output_location, name).absolute())
 
     @staticmethod
     def create_folder(path):
