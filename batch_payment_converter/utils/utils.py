@@ -4,7 +4,7 @@ import os
 import sys
 
 from pathlib import Path
-
+from zipfile import ZipFile
 
 class Utils(object):
 
@@ -13,6 +13,8 @@ class Utils(object):
 
     def build_application(self, output_location, working_dir_path, spec_path, name):
         # Run PyInstaller to create the exe
+        if Path(output_location, name).exists():
+            shutil.rmtree(Path(output_location, name).absolute())
         self.create_folder(Path("build"))
         working_dir_path = Path("build", working_dir_path)
         self.create_folder(working_dir_path)
@@ -25,7 +27,10 @@ class Utils(object):
         # Clear out temporary files
         shutil.rmtree(working_dir_path.absolute())
         # Return the path of the .exe file to the caller
-        return Path(output_location, "{}.exe".format(name))
+        with ZipFile(Path(output_location, "{}.zip".format(name)), 'w') as zip:
+            for file in os.listdir(Path(output_location, name)):
+                zip.write(Path(output_location, name, file))
+        shutil.rmtree(Path(output_location, name).absolute())
 
     @staticmethod
     def create_folder(path):

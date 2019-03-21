@@ -6,6 +6,10 @@ from abc import ABC, abstractmethod
 
 class ProcessedPayment(ABC):
 
+    # Set up the days considered working days (so this specifies that Monday (0) is the start of the week and
+    # Friday (4) is the end of the week)
+    working_days = range(0, 5, 1)
+
     @abstractmethod
     def name(self):
         return
@@ -13,6 +17,16 @@ class ProcessedPayment(ABC):
     @abstractmethod
     def output_payment(self):
         return
+
+    def calculate_working_days(self, excluded_start_date, number_of_days):
+        x = 0
+        day_counter = 0
+        current_datetime = excluded_start_date
+        while day_counter < number_of_days:
+            x += 1
+            current_datetime += timedelta(days=1)
+            day_counter += 1 if current_datetime.weekday() in self.working_days else 0
+        return timedelta(days=x)
 
 
 class ProcessedPaymentField(object):
@@ -54,7 +68,7 @@ class NatwestBankLinePayment(ProcessedPayment):
                                           str(raw_payment.amount), False)
         self.T015 = ProcessedPaymentField("Execution Date", "", False)
         self.T016 = ProcessedPaymentField(
-            "Date Payment to Arrive (Credit Date)", datetime.now() + timedelta(days=2), True,
+            "Date Payment to Arrive (Credit Date)", datetime.now() + self.calculate_working_days(datetime.now(), 2), True,
             validator=lambda a: self.date_parse_test(a)
         )
         self.T017 = ProcessedPaymentField("Ordering Institution Identifier", "",

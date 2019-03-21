@@ -9,6 +9,7 @@ from pathlib import Path
 from batch_payment_converter.converter.converter import Converter
 from batch_payment_converter.converter.processed_payments import *
 from batch_payment_converter.converter.formats import XeroFormat
+from tests.test_utils import TestUtils
 
 
 class ConverterTestUtils(object):
@@ -23,12 +24,23 @@ class ConverterTestUtils(object):
         output_path = Path("..", "..", "output", output_file_name)
         return self.converter.write_output_file(output_path, processed_payments)
 
+    def calculate_working_days(self, excluded_start_date, number_of_days):
+        x = 0
+        day_counter = 0
+        current_datetime = excluded_start_date
+        while day_counter < number_of_days:
+            x += 1
+            current_datetime += timedelta(days=1)
+            day_counter += 1 if current_datetime.weekday() in range(0, 5, 1) else 0
+        return timedelta(days=x)
+
 
 class ConvertNatwestFileNoFrontend(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
         cls.utils = ConverterTestUtils()
+        cls.test_utils = TestUtils()
 
     def tearDown(self):
         files = glob.glob("{0}{1}{2}".format(str(Path("..", "..", "output").absolute()), os.sep, "test_output*"))
@@ -53,7 +65,8 @@ class ConvertNatwestFileNoFrontend(unittest.TestCase):
             test_file_reader = csv.reader(csv_file)
             for row in test_file_reader:
                 parsed_date = datetime.date(datetime.strptime(row[18], "%d%m%Y"))
-                self.assertEqual(parsed_date, datetime.date(datetime.today()) + timedelta(days=2))
+                self.assertEqual(parsed_date, datetime.date(datetime.today()) +
+                                 self.test_utils.calculate_working_days(datetime.now(), 2))
 
     def test_natwest_long_number(self):
         output_path = self.utils.create_file(NatwestBankLinePayment, "test_output_natwest_long_number")
