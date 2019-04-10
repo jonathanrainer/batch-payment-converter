@@ -31,9 +31,9 @@ class CheckingWindow(wx.Frame):
         self.title.SetLabelMarkup(
             "<span size=\"xx-large\" weight=\"bold\">"
             "Checking Window</span>")
-        self.title_sizer.Add(self.title, 1, wx.ALL | wx.EXPAND,
+        self.title_sizer.Add(self.title, 1, wx.EXPAND,
                              self.margin_to_frame_edge)
-        self.title_sizer.SetMinSize(200, 100)
+        self.title_sizer.SetMinSize(100, 50)
 
         # Build up the grid to display the data
         self.grid_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -74,18 +74,19 @@ class CheckingWindow(wx.Frame):
         self.confirm_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.confirm_button = wx.Button(self, label="Confirm")
         self.confirm_button.Bind(wx.EVT_BUTTON, self.confirm)
-        self.confirm_sizer.Add(self.confirm_button, 1, wx.EXPAND | wx.ALL,
+        self.confirm_sizer.Add(self.confirm_button, 1, wx.EXPAND|wx.ALL,
                                self.margin_to_frame_edge)
+        self.confirm_sizer.SetMinSize(100, 50)
 
         # Set up the base sizers
 
         self.base_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.base_sizer.Add(self.title_sizer, 1, wx.EXPAND | wx.ALL,
+        self.base_sizer.Add(self.title_sizer, 1, wx.EXPAND|wx.ALL,
                             self.margin_to_frame_edge)
-        self.base_sizer.Add(self.grid_sizer, 2,
-                            wx.EXPAND|wx.ALL,
+        self.base_sizer.Add(self.grid_sizer, 5,
+                            wx.EXPAND|wx.LEFT|wx.RIGHT,
                             self.margin_to_frame_edge)
-        self.base_sizer.Add(self.confirm_sizer, 1, wx.EXPAND| wx.ALL,
+        self.base_sizer.Add(self.confirm_sizer, 0.5 , wx.EXPAND|wx.ALL,
         self.margin_to_frame_edge)
         # Layout sizers
         self.SetSizer(self.base_sizer)
